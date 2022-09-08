@@ -22,7 +22,9 @@ import prisma from "./database";
 			process.env.PRONOTE_URL,
 			process.env.PRONOTE_USERNAME,
 			process.env.PRONOTE_PASSWORD,
-			process.env.PRONOTE_EDUCONNECT === "true" ? "ac-grenoble2" : "ac-grenoble"
+			process.env.PRONOTE_EDUCONNECT === "true"
+				? "ac-grenoble2"
+				: "ac-grenoble"
 		);
 	} catch (err) {
 		console.log(err);
@@ -78,13 +80,15 @@ import prisma from "./database";
 				});
 
 				const embed = new EmbedBuilder()
-					.setTitle("Nouvelle note : " + subject.name)
+					.setTitle(`Nouvelle note : ${subject.name}`)
 					.setDescription(
 						`${mark.title}\n\nInformations Note:\nNote Elève: ${
 							mark.value || "Non Noté"
-						}/${mark.scale}\n Note Min: ${mark.min}/${mark.scale}\n Note Max: ${
-							mark.max
-						}/${mark.scale}\n Moyenne Classe: ${mark.average}/${
+						}/${mark.scale}\n Note Min: ${mark.min}/${
+							mark.scale
+						}\n Note Max: ${mark.max}/${
+							mark.scale
+						}\n Moyenne Classe: ${mark.average}/${
 							mark.scale
 						}\n Coefficient: ${
 							mark.coefficient
@@ -92,9 +96,9 @@ import prisma from "./database";
 							subject.averages.student
 						}/20\nMoyenne Classe: ${
 							subject.averages.studentClass
-						}/20\nMoyenne Min: ${subject.averages.min}/20\nMoyenne Max: ${
-							subject.averages.max
-						}/20`
+						}/20\nMoyenne Min: ${
+							subject.averages.min
+						}/20\nMoyenne Max: ${subject.averages.max}/20`
 					)
 					.setFooter({
 						text: `Note du ${moment(mark.date)
@@ -131,8 +135,8 @@ import prisma from "./database";
 			},
 		});
 
-		const editedLessons: Lesson[] = timetable.filter((t) => {
-			const dbLesson = dbLessons.find((l) => l.id == t.id);
+		const editedLessons: Lesson[] = timetable.filter(t => {
+			const dbLesson = dbLessons.find(l => l.id == t.id);
 			if (dbLesson != undefined) {
 				return (
 					dbLesson.isAway != t.isAway ||
@@ -148,7 +152,7 @@ import prisma from "./database";
 		});
 
 		for (const lesson of editedLessons) {
-			const dbLesson = dbLessons.find((l) => l.id == lesson.id);
+			const dbLesson = dbLessons.find(l => l.id == lesson.id);
 			const embed = new EmbedBuilder()
 				.setFooter({
 					text: `Cour du ${moment(lesson.from)
@@ -180,11 +184,14 @@ import prisma from "./database";
 				);
 			} else if (
 				(dbLesson == undefined && lesson.isCancelled) ||
-				(dbLesson != undefined && dbLesson.isCancelled != lesson.isCancelled)
+				(dbLesson != undefined &&
+					dbLesson.isCancelled != lesson.isCancelled)
 			) {
 				embed.setTitle(`Cour de ${lesson.subject} annulé !`);
 				embed.setDescription(
-					`Le cour de ${lesson.subject} sera annulé le ${moment(lesson.from)
+					`Le cour de ${lesson.subject} sera annulé le ${moment(
+						lesson.from
+					)
 						.locale("fr")
 						.format("dddd Do MMMM")} de ${moment(lesson.from)
 						.locale("fr")
@@ -195,9 +202,11 @@ import prisma from "./database";
 			} else if (dbLesson != undefined && dbLesson.room != lesson.room) {
 				embed.setTitle("Changemement de salle !");
 				embed.setDescription(
-					`La salle du cour de ${lesson.subject} a été changer de la salle ${
-						dbLesson.room
-					} a la salle ${lesson.room} le ${moment(lesson.from)
+					`La salle du cour de ${
+						lesson.subject
+					} a été changer de la salle ${dbLesson.room} a la salle ${
+						lesson.room
+					} le ${moment(lesson.from)
 						.locale("fr")
 						.format("dddd Do MMMM")} de ${moment(lesson.from)
 						.locale("fr")
@@ -205,7 +214,10 @@ import prisma from "./database";
 						.locale("fr")
 						.format("hh:mm")}`
 				);
-			} else if (dbLesson != undefined && dbLesson.subject != lesson.subject) {
+			} else if (
+				dbLesson != undefined &&
+				dbLesson.subject != lesson.subject
+			) {
 				embed.setTitle("Changement de cour !");
 				embed.setDescription(
 					`Le cour de ${dbLesson.subject} a été changer en cour de ${
@@ -218,10 +230,15 @@ import prisma from "./database";
 						.locale("fr")
 						.format("hh:mm")}`
 				);
-			} else if (dbLesson != undefined && dbLesson.teacher != lesson.teacher) {
+			} else if (
+				dbLesson != undefined &&
+				dbLesson.teacher != lesson.teacher
+			) {
 				embed.setTitle("Changemement de professeur !");
 				embed.setDescription(
-					`Le cour de ${lesson.subject} a eu un changement de professeur de ${
+					`Le cour de ${
+						lesson.subject
+					} a eu un changement de professeur de ${
 						dbLesson.teacher
 					} a ${lesson.teacher} le ${moment(lesson.from)
 						.locale("fr")
@@ -269,7 +286,7 @@ import prisma from "./database";
 			new Date(Date.now()),
 			session.params.lastDay
 		);
-		const newHomeworks = await asyncFilter(homeworks, async (homework) => {
+		const newHomeworks = await asyncFilter(homeworks, async homework => {
 			return (
 				(await prisma.homework.findFirst({
 					where: {
@@ -307,7 +324,7 @@ import prisma from "./database";
 					{
 						name: "Pièces jointes",
 						value: homework.files
-							.map((file) => `[${file.name}](${file.url})`)
+							.map(file => `[${file.name}](${file.url})`)
 							.join("\n"),
 					},
 				]);
@@ -325,7 +342,7 @@ import prisma from "./database";
 
 	async function syncInfos() {
 		const infos = await session.infos();
-		const newInfos = await asyncFilter(infos, async (info) => {
+		const newInfos = await asyncFilter(infos, async info => {
 			return (
 				(await prisma.info.findFirst({
 					where: {
@@ -360,7 +377,7 @@ import prisma from "./database";
 					{
 						name: "Pièces jointes",
 						value: info.files
-							.map((file) => `[${file.name}](${file.url})`)
+							.map(file => `[${file.name}](${file.url})`)
 							.join("\n"),
 					},
 				]);
