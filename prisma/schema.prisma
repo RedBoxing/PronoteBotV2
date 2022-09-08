@@ -1,0 +1,54 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./database.db"
+}
+
+model Info {
+    id      String   @id @default(cuid())
+    date    DateTime
+    title   String
+    author  String
+    content String
+}
+
+model Homework {
+    id          String   @id @default(cuid())
+    subject     String
+    description String
+    for         DateTime
+    givenAt     DateTime
+}
+
+model Lesson {
+    id           String   @id @default(cuid())
+    subject      String?
+    to           DateTime
+    from         DateTime
+    isDetention  Boolean
+    hasDuplicate Boolean
+    teacher      String?
+    room         String?
+    isAway       Boolean?
+    isCancelled  Boolean?
+    status       String?
+    color        String?
+    remoteLesson Boolean
+}
+
+model Mark {
+    id           String   @id @default(cuid())
+    subject      String
+    averageClass Int
+    min          Int
+    max          Int
+    title        String
+    value        Int
+    scale        Int
+    coefficient  Int
+    date         DateTime
+    isAway       Boolean
+}

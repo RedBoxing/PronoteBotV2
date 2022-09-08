@@ -1,0 +1,5 @@
+.env
+yarn.lock
+yarn-error.log
+prisma/database.db
+node_modules/
