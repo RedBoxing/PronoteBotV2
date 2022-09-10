@@ -26,6 +26,8 @@ import prisma from "./database";
 				? "ac-grenoble2"
 				: "ac-grenoble"
 		);
+
+		session.setKeepAlive(true);
 	} catch (err) {
 		console.log(err);
 	}
