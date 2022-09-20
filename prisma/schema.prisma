@@ -42,13 +42,13 @@ model Lesson {
 model Mark {
     id           String   @id @default(cuid())
     subject      String
-    averageClass Int
-    min          Int
-    max          Int
+    averageClass Float
+    min          Float
+    max          Float
     title        String
-    value        Int
-    scale        Int
-    coefficient  Int
+    value        Float
+    scale        Float
+    coefficient  Float
     date         DateTime
     isAway       Boolean
 }
